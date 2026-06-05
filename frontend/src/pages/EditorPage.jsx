@@ -135,6 +135,7 @@ const EditorPage = () => {
     return () => clearTimeout(timeout);
   }, [content]);
 
+  //fetch all collaborators
   const fetchCollaborators = async () => {
     try {
       const data = await getCollaborators(documentId, token);
@@ -145,6 +146,7 @@ const EditorPage = () => {
     }
   };
 
+  //fetch all members (owner + collaborators)
   const fetchMembers = async () => {
     try {
       const response = await api.get(`/documents/${documentId}/members`, {
@@ -162,6 +164,7 @@ const EditorPage = () => {
     }
   };
 
+  //for sharing with new collaboarators
   const handleShare = async () => {
     try {
       await shareDocument(documentId, email, token);
@@ -176,6 +179,7 @@ const EditorPage = () => {
     }
   };
 
+  //remove existing collaborators
   const handleRemoveCollaborator = async (userId) => {
     const result = await Swal.fire({
       title: "Remove Collaborator?",
@@ -191,14 +195,13 @@ const EditorPage = () => {
 
       toast.success("Collaborator removed");
 
-      toast.success("Collaborator removed");
-
       await fetchCollaborators();
     } catch (error) {
       toast.error("Failed to remove collaborator");
     }
   };
 
+  //toggle between public and private access
   const handlePublicToggle = async () => {
     try {
       const data = await togglePublicAccess(documentId, !isPublic, token);
@@ -213,6 +216,7 @@ const EditorPage = () => {
     }
   };
 
+  // for copying link
   const handleCopyLink = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
@@ -223,12 +227,14 @@ const EditorPage = () => {
     }
   };
 
+  //for sharing
   const openShareModal = async () => {
     await fetchMembers();
 
     setShowShareModal(true);
   };
 
+  //handling changes in document
   const handleChange = (value) => {
     setContent(value);
 
@@ -293,6 +299,7 @@ const EditorPage = () => {
         </button>
       </div>
 
+      {/* SHARE POPUP */}
       {showShareModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white rounded-2xl p-6 w-full max-w-lg shadow-xl">
@@ -364,6 +371,7 @@ const EditorPage = () => {
 
             <h3 className="font-semibold text-lg mb-3">Collaborators</h3>
 
+            {/* COLLABORATERS NAME WITH EMAIL */}
             {collaborators.length === 0 ? (
               <p className="text-gray-500">No collaborators yet</p>
             ) : (
@@ -401,6 +409,7 @@ const EditorPage = () => {
         </div>
       )}
 
+      {/* REACT EDITOR */}
       <ReactQuill
         theme="snow"
         value={content}

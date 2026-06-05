@@ -27,10 +27,12 @@ function DashboardPage() {
 
   const [searchTerm, setSearchTerm] = useState("");
 
+  //for searching
   const filteredDocuments = documents.filter((doc) =>
     doc.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  //FOR FETCHING USER DOCUMENTS
   useEffect(() => {
     const fetchDocuments = async () => {
       try {
@@ -46,6 +48,7 @@ function DashboardPage() {
     fetchDocuments();
   }, [token]);
 
+  //create document
   const handleCreateDocument = async () => {
     try {
       const data = await createDocument(token, documentTitle);
@@ -62,6 +65,7 @@ function DashboardPage() {
     }
   };
 
+  //delete document
   const handleDeleteDocument = async (id) => {
     const result = await Swal.fire({
       title: "Delete Document?",
@@ -85,8 +89,8 @@ function DashboardPage() {
     }
   };
 
+  //for logout
   const handleLogout = async () => {
-
     const result = await Swal.fire({
       title: "Logout?",
       text: "You will need to login again.",
@@ -98,13 +102,13 @@ function DashboardPage() {
     if (!result.isConfirmed) return;
 
     localStorage.removeItem("token");
-    localStorage.removeItem("user")
+    localStorage.removeItem("user");
 
     dispatch(logout());
 
     toast.success("Logged out");
 
-    navigate("/login");
+    navigate("/");
   };
 
   if (loading) {
@@ -256,6 +260,7 @@ function DashboardPage() {
         )}
       </div>
 
+      {/* Create new document pop up */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-2xl w-full max-w-md">
