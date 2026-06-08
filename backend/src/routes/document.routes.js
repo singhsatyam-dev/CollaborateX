@@ -10,6 +10,8 @@ import {
   togglePublicAccess,
   getDocumentAccess,
   removeCollaborator,
+  leaveDocument,
+  getDocumentInfo,
   deleteDocument,
 } from "../controllers/document.controller.js";
 import protectedRoute from "../middlewares/auth.middleware.js";
@@ -25,11 +27,13 @@ documentRouter.get("/:id/collaborators", protectedRoute, getCollaborators);
 documentRouter.get("/:id/members", protectedRoute, getDocumentMembers);
 documentRouter.patch("/:id/public", protectedRoute, togglePublicAccess);
 documentRouter.get("/:id/access", protectedRoute, getDocumentAccess);
+documentRouter.get("/:id/info", protectedRoute, getDocumentInfo);
 documentRouter.delete(
   "/:id/collaborators/:userId",
   protectedRoute,
   removeCollaborator,
 );
+documentRouter.delete("/:id/leave", protectedRoute, leaveDocument);
 documentRouter.delete("/:id", protectedRoute, deleteDocument);
 
 export default documentRouter;

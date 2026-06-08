@@ -247,6 +247,45 @@ export const removeCollaborator = asyncHandler(async (req, res) => {
   });
 });
 
+//LEAVE DOCUMENT FOR COLLABORATOR
+export const leaveDocument = asyncHandler(async (req, res) => {
+  const document = await Document.findById(req.params.id);
+
+  if (!document) {
+    throw new ApiError(404, "Document not found");
+  }
+
+  document.collaborators = document.collaborators.filter(
+    (id) => id.toString() !== req.user._id.toString(),
+  );
+
+  await document.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Left document successfully",
+  });
+});
+
+//GET INFO OF OWNER AND COLLABORATORS FOR COLLABORATOR
+export const getDocumentInfo = asyncHandler(
+  async (req, res) => {
+    const document = await Document.findById(req.params.id)
+      .populate("owner", "name email")
+      .populate("collaborators", "name email");
+
+    if (!document) {
+      throw new ApiError(404, "Document not found");
+    }
+
+    res.status(200).json({
+      success: true,
+      owner: document.owner,
+      collaborators: document.collaborators,
+    });
+  }
+);
+
 // DELETE DOC
 export const deleteDocument = asyncHandler(async (req, res) => {
   const document = await Document.findById(req.params.id);

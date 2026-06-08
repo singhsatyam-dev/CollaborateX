@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
+import { leaveDocument } from "../api/dashboardApi";
 import { socket } from "../sockets/socket";
 import api from "../api/axios";
 import {
@@ -40,6 +41,8 @@ const EditorPage = () => {
 
   const [owner, setOwner] = useState(null);
 
+  const [isOwner, setIsOwner] = useState(false);
+
   const [isPublic, setIsPublic] = useState(false);
 
   const [saveStatus, setSaveStatus] = useState("Saved");
@@ -51,6 +54,9 @@ const EditorPage = () => {
   const { id: documentId } = useParams();
 
   const { token, user } = useSelector((state) => state.auth);
+
+  const [showInfoModal, setShowInfoModal] = useState(false);
+  const [documentInfo, setDocumentInfo] = useState(null);
 
   if (!token || !user) {
     return <div>Loading...</div>;
@@ -67,6 +73,9 @@ const EditorPage = () => {
         });
         setContent(response.data.document.content);
         setTitle(response.data.document.title);
+        setDocumentInfo({
+          owner: response.data.document.owner,
+        });
 
         const access = await api.get(`/documents/${documentId}/access`, {
           headers: {
@@ -75,6 +84,8 @@ const EditorPage = () => {
         });
 
         setRole(access.data.role);
+
+        setIsOwner(response.data.document.owner === user.id);
 
         socket.emit("join-document", {
           documentId,
@@ -248,6 +259,21 @@ const EditorPage = () => {
     });
   };
 
+  // Fetch owner + collaborators for Info modal
+  const fetchDocumentInfo = async () => {
+    try {
+      const { data } = await api.get(`/documents/${documentId}/info`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      setDocumentInfo(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="editor-container">
       <div className="flex justify-between items-center mb-6">
@@ -293,12 +319,24 @@ const EditorPage = () => {
           )}
         </div>
 
-        <button
-          onClick={openShareModal}
-          className="bg-black text-white px-4 py-2 rounded-lg"
-        >
-          Share
-        </button>
+        {isOwner ? (
+          <button
+            onClick={openShareModal}
+            className="bg-black text-white px-4 py-2 rounded-lg"
+          >
+            Share
+          </button>
+        ) : (
+          <button
+            onClick={() => {
+              fetchDocumentInfo();
+              setShowInfoModal(true);
+            }}
+            className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+          >
+            Info
+          </button>
+        )}
       </div>
 
       {/* SHARE POPUP */}
@@ -401,6 +439,59 @@ const EditorPage = () => {
                 ))}
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* INFO MODEL FOR THE COLLABORATORS ONLY */}
+      {showInfoModal && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold">Document Information</h2>
+
+              <button
+                onClick={() => setShowInfoModal(false)}
+                className="text-gray-500 text-xl"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mb-6">
+              <h3 className="font-semibold text-lg mb-2">Owner</h3>
+
+              <div className="border rounded-lg p-3 bg-gray-50">
+                <p className="font-medium">{documentInfo?.owner?.name}</p>
+
+                <p className="text-sm text-gray-500">
+                  {documentInfo?.owner?.email}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <h3 className="font-semibold text-lg mb-3">Collaborators</h3>
+
+              {documentInfo?.collaborators?.length === 0 ? (
+                <p className="text-gray-500">No collaborators</p>
+              ) : (
+                <div className="space-y-3">
+                  {documentInfo?.collaborators?.map((collaborator) => (
+                    <div
+                      key={collaborator._id}
+                      className="border rounded-lg p-3"
+                    >
+                      <p className="font-medium">{collaborator.name}</p>
+
+                      <p className="text-sm text-gray-500">
+                        {collaborator.email}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
       )}

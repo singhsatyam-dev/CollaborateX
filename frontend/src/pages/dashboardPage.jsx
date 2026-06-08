@@ -7,6 +7,7 @@ import {
   getUserDocuments,
   createDocument,
   deleteDocument,
+  leaveDocument,
 } from "../api/dashboardApi";
 import { logout } from "../features/auth/authSlice";
 
@@ -41,7 +42,6 @@ function DashboardPage() {
   const sharedDocuments = filteredDocuments.filter(
     (doc) => doc.owner !== user?.id,
   );
-
 
   //FOR FETCHING USER DOCUMENTS
   useEffect(() => {
@@ -120,6 +120,31 @@ function DashboardPage() {
     toast.success("Logged out");
 
     navigate("/");
+  };
+
+  //leave for collaborator
+  const handleLeaveDocument = async (documentId) => {
+    const result = await Swal.fire({
+      title: "Leave Document?",
+      text: "You will lose access to this shared document.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Leave",
+      cancelButtonText: "Cancel",
+      confirmButtonColor: "#ef4444",
+    });
+
+    if (!result.isConfirmed) return;
+    
+    try {
+      await leaveDocument(documentId, token);
+
+      toast.success("You left the document");
+
+      setDocuments((prev) => prev.filter((doc) => doc._id !== documentId));
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to leave document");
+    }
   };
 
   if (loading) {
@@ -303,12 +328,21 @@ function DashboardPage() {
                     </p>
                   </div>
 
-                  <button
-                    onClick={() => navigate(`/documents/${doc._id}`)}
-                    className="w-full bg-black text-white py-2 rounded-xl hover:bg-slate-800"
-                  >
-                    Open
-                  </button>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={() => navigate(`/documents/${doc._id}`)}
+                      className="flex-1 bg-black text-white py-2 rounded-xl"
+                    >
+                      Open
+                    </button>
+
+                    <button
+                      onClick={() => handleLeaveDocument(doc._id)}
+                      className="flex-1 bg-red-500 text-white py-2 rounded-xl"
+                    >
+                      Leave
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

@@ -22,6 +22,16 @@ export const createDocument = async (token, title) => {
   return data;
 };
 
+export const leaveDocument = async (documentId, token) => {
+  const { data } = await api.delete(`/documents/${documentId}/leave`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data;
+};
+
 export const deleteDocument = async (documentId, token) => {
   const response = await api.delete(`/documents/${documentId}`, {
     headers: {

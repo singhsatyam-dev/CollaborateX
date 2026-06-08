@@ -39,6 +39,7 @@ export const togglePublicAccess = async (documentId, isPublic, token) => {
   return data;
 };
 
+
 export const removeCollaborator = async (documentId, userId, token) => {
   const { data } = await api.delete(
     `/documents/${documentId}/collaborators/${userId}`,
