@@ -34,11 +34,7 @@ export const getUserDocument = asyncHandler(async (req, res) => {
 
 // GET SINGLE DOC BASED ON ID
 export const getSingleDocument = asyncHandler(async (req, res) => {
-  console.log("PARAM ID:", req.params.id);
-
   const document = await Document.findById(req.params.id);
-
-  console.log("FOUND DOC:", document);
 
   if (!document) {
     throw new ApiError(404, "Document not found");
@@ -70,8 +66,14 @@ export const updateDocument = asyncHandler(async (req, res) => {
     throw new ApiError(404, "Document not found");
   }
 
-  if (document.owner.toString() !== req.user._id.toString()) {
-    throw new ApiError(403, "Only owner can update document");
+  const isOwner = document.owner.toString() === req.user._id.toString();
+
+  const isCollaborator = document.collaborators.some(
+    (id) => id.toString() === req.user._id.toString(),
+  );
+
+  if (!isOwner && !isCollaborator) {
+    throw new ApiError(403, "Not authorized to edit this document");
   }
 
   document.title = title || document.title;

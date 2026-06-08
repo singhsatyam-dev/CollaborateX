@@ -6,6 +6,7 @@ import EditorPage from "./pages/EditorPage";
 import DashboardPage from "./pages/dashboardPage";
 import ProtectedRoute from "./routes/protectedRoutes";
 import LandingPage from "./pages/LandingPage";
+import NotFoundPage from "./pages/NotFound";
 
 function App() {
   return (
@@ -30,7 +31,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<Navigate to="/" />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );
