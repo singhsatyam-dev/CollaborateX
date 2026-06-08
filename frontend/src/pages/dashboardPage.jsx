@@ -32,6 +32,22 @@ function DashboardPage() {
     doc.title.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  // Owned Documents
+  const ownedDocuments = filteredDocuments.filter(
+    (doc) => doc.owner === user?.id,
+  );
+
+  //Shared Documents
+  const sharedDocuments = filteredDocuments.filter(
+    (doc) => doc.owner !== user?.id,
+  );
+
+  // Recent Documents
+  const recentDocuments = [...documents]
+    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
+    .slice(0, 5);
+
+
   //FOR FETCHING USER DOCUMENTS
   useEffect(() => {
     const fetchDocuments = async () => {
@@ -207,12 +223,12 @@ function DashboardPage() {
           <h2 className="text-2xl font-bold text-slate-800">My Documents</h2>
         </div>
 
-        {documents.length === 0 ? (
+        {ownedDocuments.length === 0 ? (
           <div className="bg-white rounded-3xl p-16 text-center shadow-sm">
             <h2 className="text-3xl font-bold mb-4">No Documents Yet</h2>
 
             <p className="text-gray-500 mb-6">
-              Create your first document and start collaborating.
+              You haven't created any documents yet.
             </p>
 
             <button
@@ -224,7 +240,7 @@ function DashboardPage() {
           </div>
         ) : (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredDocuments.map((doc) => (
+            {ownedDocuments.map((doc) => (
               <div
                 key={doc._id}
                 className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
@@ -258,6 +274,51 @@ function DashboardPage() {
             ))}
           </div>
         )}
+
+        {/* Shared documents */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold text-slate-800 mb-4">
+            Shared Documents
+          </h2>
+
+          {sharedDocuments.length === 0 ? (
+            <div className="bg-white rounded-3xl p-10 text-center shadow-sm">
+              <p className="text-gray-500">No documents shared with you.</p>
+            </div>
+          ) : (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {sharedDocuments.map((doc) => (
+                <div
+                  key={doc._id}
+                  className="bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+                >
+                  <div className="mb-4">
+                    <div className="flex justify-between items-center">
+                      <h2 className="text-xl font-bold text-slate-800">
+                        {doc.title}
+                      </h2>
+
+                      <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-lg text-xs font-semibold">
+                        SHARED
+                      </span>
+                    </div>
+
+                    <p className="text-sm text-gray-500 mt-2">
+                      Updated {new Date(doc.updatedAt).toLocaleString()}
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={() => navigate(`/documents/${doc._id}`)}
+                    className="w-full bg-black text-white py-2 rounded-xl hover:bg-slate-800"
+                  >
+                    Open
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Create new document pop up */}

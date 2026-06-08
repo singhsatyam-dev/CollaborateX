@@ -26,7 +26,7 @@ function App() {
           path="/documents/:id"
           element={
             <ProtectedRoute>
-              <EditorPage />{" "}
+              <EditorPage />
             </ProtectedRoute>
           }
         />

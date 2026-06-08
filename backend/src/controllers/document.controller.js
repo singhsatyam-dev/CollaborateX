@@ -22,7 +22,7 @@ export const createDocument = asyncHandler(async (req, res) => {
 //getting all user documents
 export const getUserDocument = asyncHandler(async (req, res) => {
   const documents = await Document.find({
-    owner: req.user._id,
+    $or: [{ owner: req.user._id }, { collaborators: req.user._id }],
   }).sort({ updatedAt: -1 });
 
   res.status(200).json({
