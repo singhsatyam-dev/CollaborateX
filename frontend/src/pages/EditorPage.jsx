@@ -140,6 +140,8 @@ const EditorPage = () => {
     try {
       const data = await getCollaborators(documentId, token);
 
+      console.log("Collaborators:", data.collaborators);
+
       setCollaborators(data.collaborators);
     } catch (error) {
       console.log(error);

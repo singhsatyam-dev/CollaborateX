@@ -42,11 +42,6 @@ function DashboardPage() {
     (doc) => doc.owner !== user?.id,
   );
 
-  // Recent Documents
-  const recentDocuments = [...documents]
-    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))
-    .slice(0, 5);
-
 
   //FOR FETCHING USER DOCUMENTS
   useEffect(() => {
