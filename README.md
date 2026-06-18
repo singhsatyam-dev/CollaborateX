@@ -116,12 +116,12 @@ Realtime Collaboration
 
 ### Document Editor
 
-<img width="1855" height="653" alt="EditorPage" src="https://github.com/user-attachments/assets/1be0acb1-ed3c-442c-8eb0-9a4d7b296080" />
-
+<img width="1852" height="599" alt="image" src="https://github.com/user-attachments/assets/d7b9e4c4-7f71-4969-a9e1-9b2256ff8f23" />
 
 ### Share Document
 
-<img width="1656" height="912" alt="image" src="https://github.com/user-attachments/assets/a1294218-ccfb-4701-a446-95eca52bf30b" />
+<img width="1852" height="853" alt="image" src="https://github.com/user-attachments/assets/14f798a2-b629-4bfc-b217-678c89be5072" />
+
 
 
 ## Project Workflow
