@@ -156,9 +156,9 @@ function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-sky-50 to-purple-50">
       {/* Navbar */}
-      <nav className="bg-white shadow-sm border-b">
+      <nav className="bg-white/70 backdrop-blur-md border-b border-white/30 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-bold text-slate-800">CollaborateX</h1>
@@ -168,7 +168,7 @@ function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded-full bg-black text-white flex items-center justify-center font-bold">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white flex items-center justify-center font-bold">
               {user?.name?.charAt(0).toUpperCase()}
             </div>
 

@@ -275,7 +275,7 @@ const EditorPage = () => {
   };
 
   return (
-    <div className="editor-container">
+    <div className="editor-container px-8 pt-6">
       <div className="flex justify-between items-center mb-6">
         <div className="flex-1">
           <input
