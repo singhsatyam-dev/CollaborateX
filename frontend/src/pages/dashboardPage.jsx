@@ -61,11 +61,15 @@ function DashboardPage() {
 
   //create document
   const handleCreateDocument = async () => {
+    if (!documentTitle.trim()) {
+      toast.error("Please enter a document title");
+      return;
+    }
+
     try {
       const data = await createDocument(token, documentTitle);
 
       setDocumentTitle("");
-
       setShowCreateModal(false);
 
       toast.success("Document created");
@@ -135,7 +139,7 @@ function DashboardPage() {
     });
 
     if (!result.isConfirmed) return;
-    
+
     try {
       await leaveDocument(documentId, token);
 
@@ -252,7 +256,7 @@ function DashboardPage() {
             </p>
 
             <button
-              onClick={handleCreateDocument}
+              onClick={() => setShowCreateModal(true)}
               className="bg-black text-white px-6 py-3 rounded-xl"
             >
               Create Document

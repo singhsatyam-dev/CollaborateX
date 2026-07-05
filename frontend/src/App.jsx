@@ -9,12 +9,28 @@ import LandingPage from "./pages/LandingPage";
 import NotFoundPage from "./pages/NotFound";
 
 function App() {
+  const token = localStorage.getItem("token");
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/signup" element={<SignUp />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/"
+          element={
+            token ? <Navigate to="/dashboard" replace /> : <LandingPage />
+          }
+        />
+
+        <Route
+          path="/login"
+          element={token ? <Navigate to="/dashboard" replace /> : <LoginPage />}
+        />
+
+        <Route
+          path="/signup"
+          element={token ? <Navigate to="/dashboard" replace /> : <SignUp />}
+        />
+
         <Route
           path="/dashboard"
           element={
@@ -23,6 +39,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route
           path="/documents/:id"
           element={
@@ -31,6 +48,7 @@ function App() {
             </ProtectedRoute>
           }
         />
+
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>

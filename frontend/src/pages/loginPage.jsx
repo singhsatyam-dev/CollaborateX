@@ -48,7 +48,7 @@ function LoginPage() {
 
       toast.success("Login successful");
 
-      navigate("/dashboard");
+      navigate("/dashboard", { replace: true });
     } catch (error) {
       setError(error.response?.data?.message || "Login failed");
     } finally {

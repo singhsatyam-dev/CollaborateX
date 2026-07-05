@@ -48,7 +48,7 @@ function SignUp() {
 
       toast.success("Account created");
 
-      navigate("/login");
+      navigate("/dashboard", { replace: true });
     } catch (error) {
       setError(error.response?.data?.message) || "Signup Failed";
     } finally {
